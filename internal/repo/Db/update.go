@@ -8,9 +8,14 @@ import (
 func (p *psql) Update(reqId string, b model.BannerDB, t model.Tags) error {
 	p.logger.WithField("psql.Update", reqId).Debug("Полученные данные banner -- ", b, " tags -- ", t)
 
+	err := p.chekRowOnID(reqId, b.Id)
+	if err != nil {
+		return err
+	}
+
 	query := p.getQuery(reqId, b)
 
-	err := p.dB.QueryRow(query).Err()
+	err = p.dB.QueryRow(query).Err()
 	if err != nil {
 		p.logger.WithField("psql.Update", reqId).Error(err)
 		return err

@@ -21,3 +21,11 @@ func InitServiceBanner(logger *logrus.Logger, db repo.Repos) *serviceBanner {
 		cfg:    cfg,
 	}
 }
+
+type ErrIncorrectData struct {
+	msg string
+}
+
+func (e ErrIncorrectData) Error() string {
+	return e.msg
+}

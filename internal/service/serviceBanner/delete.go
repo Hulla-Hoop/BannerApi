@@ -1,7 +1,6 @@
 package servicebanner
 
 import (
-	"errors"
 	"regexp"
 	"strconv"
 )
@@ -26,13 +25,13 @@ func (c *serviceBanner) idCheckAndConvert(reqId string, id string) (int, error) 
 	pattern := `^[0-9]*$`
 	match, _ := regexp.MatchString(pattern, id)
 	if !match {
-		c.logger.WithField("carCatalog.idCheckAndConvert", reqId).Error("некорректные данные ", id)
-		return 0, errors.New("некорректные данные")
+		c.logger.WithField("ServiceBanner.idCheckAndConvert", reqId).Error("некорректные данные ", id)
+		return -1, ErrIncorrectData{msg: "некорректные данные"}
 	}
 	idi, err := strconv.Atoi(id)
 	if err != nil {
-		c.logger.WithField("carCatalog.idCheckAndConvert", reqId).Error("Ннеудалось преобразовать ", id)
-		return 0, err
+		c.logger.WithField("ServiceBanner.idCheckAndConvert", reqId).Error("Ннеудалось преобразовать ", id)
+		return -1, err
 	}
 
 	return idi, nil
