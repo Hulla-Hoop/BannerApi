@@ -40,7 +40,7 @@ func (c *serviceBanner) filterValidate(reqId string, tegID string, featureID str
 	}
 
 	if tegID != "" {
-		match, err := regexp.MatchString(`^[0-9]*$`, tegID)
+		match, err := regexp.MatchString(`^(?:1000|\d{1,3})$`, tegID)
 		if err != nil {
 			c.logger.WithField("carCatalog.checkFilter", reqId).Error("некорректные данные ", tegID)
 		} else if !match {
@@ -51,7 +51,7 @@ func (c *serviceBanner) filterValidate(reqId string, tegID string, featureID str
 	}
 
 	if featureID != "" {
-		match, err := regexp.MatchString(`^[0-9]*$`, featureID)
+		match, err := regexp.MatchString(`^(?:1000|\d{1,3})$`, featureID)
 		if err != nil {
 			c.logger.WithField("carCatalog.checkFilter", reqId).Error("некорректные данные ", featureID)
 		} else if !match {
