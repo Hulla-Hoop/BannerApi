@@ -2,14 +2,23 @@ package servicebanner
 
 import (
 	"banner/internal/model"
+	"encoding/json"
 	"fmt"
 	"regexp"
 )
 
-func (c *serviceBanner) Insert(reqId string, banner model.BannerHttp) (int, error) {
+func (c *serviceBanner) Insert(reqId string, body []byte) (int, error) {
+
+	var banner model.BannerHttp
+
+	err := json.Unmarshal(body, &banner)
+	if err != nil {
+		return 0, err
+	}
+
 	c.logger.WithField("ServiceBanner.Insert", reqId).Debug("Полученные данные -- ", banner)
 
-	err := c.validate(reqId, banner)
+	err = c.validate(reqId, banner)
 	if err != nil {
 		return 0, err
 	}

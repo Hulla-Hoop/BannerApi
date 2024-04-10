@@ -1,10 +1,18 @@
 package servicebanner
 
-import "banner/internal/model"
+import (
+	"banner/internal/model"
+	"strconv"
+)
 
-func (c *serviceBanner) GetOne(reqId string, tegID string, featureID string, last bool) (model.Banner, error) {
+func (c *serviceBanner) GetOne(reqId string, tegID string, featureID string, las string) (model.Banner, error) {
 
-	c.logger.WithField("ServiceBanner.GetOne", reqId).Debug("Полученные данные teg -- ", tegID, "feature --", featureID)
+	last, err := strconv.ParseBool(las)
+	if err != nil {
+		return model.Banner{}, err
+	}
+
+	c.logger.WithField("ServiceBanner.GetOne", reqId).Debug("Полученные данные teg -- ", tegID, "feature --", featureID, "last --", last)
 
 	tegIDI, err := c.idCheckAndConvert(reqId, tegID)
 	if err != nil {

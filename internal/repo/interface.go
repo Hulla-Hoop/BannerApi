@@ -9,3 +9,5 @@ type Repos interface {
 	GetOne(reqId string, tag_id int, feature_id int, last bool) (model.Banner, error)
 	Delete(reqId string, id int) error
 }
+
+//TODO: сделать слой кеширования

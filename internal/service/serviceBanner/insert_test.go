@@ -1,7 +1,6 @@
 package servicebanner
 
 import (
-	"banner/internal/config"
 	"banner/internal/logger"
 	"banner/internal/model"
 	"banner/internal/repo"
@@ -14,7 +13,6 @@ func Test_serviceBanner_validate(t *testing.T) {
 	type fields struct {
 		logger *logrus.Logger
 		db     repo.Repos
-		cfg    *config.ConfigRemoteApi
 	}
 	type args struct {
 		reqId  string
@@ -31,7 +29,6 @@ func Test_serviceBanner_validate(t *testing.T) {
 			fields: fields{
 				logger: logger.New(),
 				db:     nil,
-				cfg:    nil,
 			},
 			args: args{
 				reqId: "Test",
@@ -55,7 +52,6 @@ func Test_serviceBanner_validate(t *testing.T) {
 			fields: fields{
 				logger: logger.New(),
 				db:     nil,
-				cfg:    nil,
 			},
 			args: args{
 				reqId: "Test",
@@ -78,7 +74,6 @@ func Test_serviceBanner_validate(t *testing.T) {
 			fields: fields{
 				logger: logger.New(),
 				db:     nil,
-				cfg:    nil,
 			},
 			args: args{
 				reqId: "Test",
@@ -101,7 +96,6 @@ func Test_serviceBanner_validate(t *testing.T) {
 			fields: fields{
 				logger: logger.New(),
 				db:     nil,
-				cfg:    nil,
 			},
 			args: args{
 				reqId: "Test",
@@ -124,7 +118,6 @@ func Test_serviceBanner_validate(t *testing.T) {
 			fields: fields{
 				logger: logger.New(),
 				db:     nil,
-				cfg:    nil,
 			},
 			args: args{
 				reqId: "Test",
@@ -148,7 +141,6 @@ func Test_serviceBanner_validate(t *testing.T) {
 			c := &serviceBanner{
 				logger: tt.fields.logger,
 				db:     tt.fields.db,
-				cfg:    tt.fields.cfg,
 			}
 			err := c.validate(tt.args.reqId, tt.args.banner)
 			if (err != nil) != tt.wantErr {

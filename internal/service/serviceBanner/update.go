@@ -1,8 +1,18 @@
 package servicebanner
 
-import "banner/internal/model"
+import (
+	"banner/internal/model"
+	"encoding/json"
+)
 
-func (c *serviceBanner) Update(reqId string, id string, banner model.BannerHttp) error {
+func (c *serviceBanner) Update(reqId string, id string, ban []byte) error {
+
+	var banner model.BannerHttp
+
+	err := json.Unmarshal(ban, &banner)
+	if err != nil {
+		return err
+	}
 
 	c.logger.WithField("ServiceBanner.Update", reqId).Debug("Полученные данные -- ", banner, "----", id)
 
