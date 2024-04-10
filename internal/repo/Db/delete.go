@@ -35,7 +35,7 @@ func (p *psql) chekRowOnID(reqId string, id int) error {
 	err := p.dB.QueryRow("SELECT EXISTS(SELECT * FROM banner WHERE id = $1)", id).Scan(&ok)
 
 	if err != nil {
-		p.logger.WithField("psql.chekRow", reqId).Error(err)
+		p.logger.WithField("psql.chekRowOnID", reqId).Error(err)
 		return err
 	}
 

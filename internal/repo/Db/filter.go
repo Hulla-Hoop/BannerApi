@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerDB, error) {
+func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerHttp, error) {
 
 	query := p.queryFilter(filter)
 
@@ -19,10 +19,9 @@ func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerDB,
 
 	defer rows.Close()
 
-	var bannerDBSL []model.BannerDB
+	var bannerSL []model.BannerHttp
 
 	for rows.Next() {
-
 		var bannerDB model.BannerDB
 
 		err := rows.Scan()
@@ -34,10 +33,33 @@ func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerDB,
 			return nil, err
 
 		}
-		bannerDBSL = append(bannerDBSL, bannerDB)
+
+		var tegs model.Tags
+
+		row, err := p.dB.Query("Select tegs_id from chains where banner_id = $1", bannerDB.Id)
+		if err != nil {
+			p.logger.WithField("psql.Filter", reqId).Error(err)
+			return nil, err
+		}
+
+		defer rows.Close()
+
+		for row.Next() {
+			var tegID int
+			err := row.Scan(&tegID)
+			if err != nil {
+				p.logger.WithField("psql.Filter", reqId).Error(err)
+				return nil, err
+			}
+			tegs = append(tegs, tegID)
+		}
+
+		b := bannerDB.TOTagsAndBannerFilter(tegs)
+
+		bannerSL = append(bannerSL, b)
 	}
 
-	return bannerDBSL, nil
+	return bannerSL, nil
 }
 
 // генирирует строку запроса на основе полученной мапы которая содержит параметры фильтрации
