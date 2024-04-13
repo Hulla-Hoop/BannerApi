@@ -19,7 +19,7 @@
 
 ### `1 Используйте этот API `
 
-![](/docs/April(Avito).postman_collection.json)
+`(/docs/April(Avito).postman_collection.json)`
 
 ## Бонус 
 
