@@ -12,11 +12,11 @@ import (
 var Users model.Users = []model.User{
 	{
 		Username: "admin",
-		Role:     "admin",
+		Root:     true,
 	},
 	{
 		Username: "user",
-		Role:     "user",
+		Root:     false,
 	}}
 
 func (m *midllware) Aut(next http.HandlerFunc) http.HandlerFunc {
@@ -57,8 +57,8 @@ func (m *midllware) Aut(next http.HandlerFunc) http.HandlerFunc {
 		for _, user := range Users {
 			if user.Username == claims.Username {
 				ctx := context.WithValue(r.Context(), "reqID", reqID)
-				ctxx := context.WithValue(ctx, "role", user.Role)
-				next.ServeHTTP(w, r.WithContext(ctxx))
+				ctx = context.WithValue(ctx, "role", user.Root)
+				next.ServeHTTP(w, r.WithContext(ctx))
 				return
 			} else {
 				w.WriteHeader(http.StatusUnauthorized)

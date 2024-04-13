@@ -16,6 +16,8 @@ func (h *endpoint) GetBanner(w http.ResponseWriter, r *http.Request) {
 		reqID = ""
 	}
 
+	role := r.Context().Value("role").(bool)
+
 	query := r.URL.Query()
 
 	tagID, ok := query["tag_id"]
@@ -33,7 +35,7 @@ func (h *endpoint) GetBanner(w http.ResponseWriter, r *http.Request) {
 		last[0] = "false"
 	}
 
-	b, err := h.s.GetOne(reqID, tagID[0], featureID[0], last[0])
+	b, err := h.s.GetOne(reqID, tagID[0], featureID[0], last[0], role)
 	switch err := errors.Cause(err).(type) {
 	case psql.ErrNotFound:
 		h.jsonError(w, http.StatusNotFound, err)

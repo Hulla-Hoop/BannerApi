@@ -9,5 +9,3 @@ type EndpointsBaner interface {
 	GetBanner(w http.ResponseWriter, r *http.Request)
 	Filter(w http.ResponseWriter, r *http.Request)
 }
-
-//TODO сделать миддлвейр аутификации

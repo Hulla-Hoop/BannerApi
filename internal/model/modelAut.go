@@ -9,7 +9,7 @@ type Claims struct {
 
 type User struct {
 	Username string `json:"username"`
-	Role     string `json:"role"`
+	Root     bool   `json:"root"`
 }
 
 type Users []User

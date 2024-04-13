@@ -16,6 +16,12 @@ func (h *endpoint) Update(w http.ResponseWriter, r *http.Request) {
 		reqID = ""
 	}
 
+	role := r.Context().Value("role").(bool)
+	if !role {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
 	vars := mux.Vars(r)
 	id, ok := vars["id"]
 	if !ok {

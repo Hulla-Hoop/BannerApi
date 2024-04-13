@@ -16,6 +16,12 @@ func (h *endpoint) Insert(w http.ResponseWriter, r *http.Request) {
 		reqID = ""
 	}
 
+	role := r.Context().Value("role").(bool)
+	if !role {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		h.jsonError(w, http.StatusInternalServerError, err)

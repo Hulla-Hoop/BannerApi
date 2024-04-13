@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (p *psql) GetOne(reqId string, tag_id int, feature_id int, last bool) (model.Banner, error) {
+func (p *psql) GetOne(reqId string, tag_id int, feature_id int, last bool, root bool) (model.Banner, error) {
 	p.logger.WithField("psql.GetOne", reqId).Debug("Полученные данные -- ", tag_id, feature_id, last)
 
 	var b model.Banner
@@ -20,11 +20,19 @@ func (p *psql) GetOne(reqId string, tag_id int, feature_id int, last bool) (mode
 		return model.Banner{}, ErrNotFound{msg: fmt.Sprintf("Баннер с feature_id %d и tag_id %d не найден", feature_id, tag_id)}
 	}
 
-	err = p.dB.QueryRow(`SELECT banner.title,banner.text,banner.url FROM banner
+	if !root {
+		err = p.dB.QueryRow(`SELECT banner.title,banner.text,banner.url FROM banner
 	JOIN chains
 	ON banner.id=chains.banner_id
 	WHERE chains.feature_id=$1 AND chains.tags_id=$2 AND banner.active=true;
 	`, feature_id, tag_id).Scan(&b.Title, &b.Text, &b.Url)
+	} else {
+		err = p.dB.QueryRow(`SELECT banner.title,banner.text,banner.url FROM banner
+	JOIN chains
+	ON banner.id=chains.banner_id
+	WHERE chains.feature_id=$1 AND chains.tags_id=$2;
+	`, feature_id, tag_id).Scan(&b.Title, &b.Text, &b.Url)
+	}
 
 	if err != nil {
 

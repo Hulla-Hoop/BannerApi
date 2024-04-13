@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (c *serviceBanner) GetOne(reqId string, tegID string, featureID string, las string) (model.Banner, error) {
+func (c *serviceBanner) GetOne(reqId string, tegID string, featureID string, las string, role bool) (model.Banner, error) {
 
 	last, err := strconv.ParseBool(las)
 	if err != nil {
@@ -27,7 +27,7 @@ func (c *serviceBanner) GetOne(reqId string, tegID string, featureID string, las
 		return model.Banner{}, err
 	}
 
-	return c.db.GetOne(reqId, tegIDI, featureIDI, last)
+	return c.db.GetOne(reqId, tegIDI, featureIDI, last, role)
 }
 
 func (c *serviceBanner) tegCheckAndConvert(reqId string, id string) (int, error) {

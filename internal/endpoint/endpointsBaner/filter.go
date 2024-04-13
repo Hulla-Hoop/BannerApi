@@ -7,10 +7,16 @@ import (
 
 func (h *endpoint) Filter(w http.ResponseWriter, r *http.Request) {
 	reqID, ok := r.Context().Value("reqID").(string)
-
 	if !ok {
 		reqID = ""
 	}
+
+	role := r.Context().Value("role").(bool)
+	if !role {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
 	//при отсутствии параметров возвращаем все баннеры
 	feature := r.URL.Query().Get("feature_id")
 
