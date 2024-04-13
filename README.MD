@@ -17,6 +17,10 @@
 
 ## Сервис
 
+### `1 Используйте этот API `
+
+![](/docs/April(Avito).postman_collection.json)
+
 ## Бонус 
 
 ![Напоминания](/docs/Ребята.png)
