@@ -56,7 +56,8 @@ func (c *serviceBanner) validate(reqId string, banner model.BannerHttp) error {
 - Нагрузочный тест по ручке 
   
 ```  curl --location 'http://localhost:8080/user_banner?tag_id=1&feature_id=3&use_last_revision=false' \
---header 'token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIifQ.IQohLkYqxzY9A6ent4MGs1NyBNcSQyiyAd5ZG_c39CEHbuKwOuMNXhMO5dg01rB9CSV5R7MchcaZHDYZs_k7Bg'```
+--header 'token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIifQ.IQohLkYqxzY9A6ent4MGs1NyBNcSQyiyAd5ZG_c39CEHbuKwOuMNXhMO5dg01rB9CSV5R7MchcaZHDYZs_k7Bg' 
+```
 
 ![Нагрузочный](/docs/Нагрузочный%20тест.png)
 
