@@ -2,6 +2,7 @@ package psql
 
 import (
 	"banner/internal/model"
+	"database/sql"
 	"fmt"
 )
 
@@ -27,7 +28,10 @@ func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerHtt
 		err := rows.Scan(&bannerDB.Id, &bannerDB.Title, &bannerDB.Text, &bannerDB.Url, &bannerDB.Active, &bannerDB.Created_at, &bannerDB.Updated_at)
 
 		if err != nil {
-
+			if err == sql.ErrNoRows {
+				p.logger.WithField("psql.Filter", reqId).Debug("Баннеры не найдены")
+				continue
+			}
 			p.logger.WithField("psql.Filter", reqId).Error(err)
 
 			return nil, err
@@ -36,7 +40,13 @@ func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerHtt
 
 		err = p.dB.QueryRow("Select feature_id from chains where banner_id = $1", bannerDB.Id).Scan(&bannerDB.Feature)
 		if err != nil {
+
+			if err == sql.ErrNoRows {
+				p.logger.WithField("psql.Filter", reqId).Debug("Баннеры не найдены")
+				continue
+			}
 			p.logger.WithField("psql.Filter", reqId).Error(err)
+
 			return nil, err
 		}
 
@@ -44,7 +54,13 @@ func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerHtt
 
 		row, err := p.dB.Query("Select tags_id from chains where banner_id = $1", bannerDB.Id)
 		if err != nil {
+
+			if err == sql.ErrNoRows {
+				p.logger.WithField("psql.Filter", reqId).Debug("Баннеры не найдены")
+				continue
+			}
 			p.logger.WithField("psql.Filter", reqId).Error(err)
+
 			return nil, err
 		}
 
@@ -54,13 +70,21 @@ func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerHtt
 			var tegID int
 			err := row.Scan(&tegID)
 			if err != nil {
+
+				if err == sql.ErrNoRows {
+					p.logger.WithField("psql.Filter", reqId).Debug("Баннеры не найдены")
+					continue
+				}
 				p.logger.WithField("psql.Filter", reqId).Error(err)
+
 				return nil, err
 			}
 			tegs = append(tegs, tegID)
 		}
 
 		b := bannerDB.TOTagsAndBannerFilter(tegs)
+
+		p.logger.WithField("psql.Filter", reqId).Debug("Полученные данные", b)
 
 		bannerSL = append(bannerSL, b)
 	}

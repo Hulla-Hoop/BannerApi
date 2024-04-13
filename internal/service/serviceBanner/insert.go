@@ -31,7 +31,7 @@ func (c *serviceBanner) Insert(reqId string, body []byte) (int, error) {
 
 func (c *serviceBanner) validate(reqId string, banner model.BannerHttp) error {
 
-	if banner.Feature_id <= 0 {
+	if banner.Feature_id <= 0 || banner.Feature_id >= 1000 {
 		c.logger.WithField("ServiceBanner.validate", reqId).Error("некорректные данные ", banner)
 		return ErrIncorrectData{msg: fmt.Sprintf("данные %d некорректны", banner.Feature_id)}
 	}
@@ -39,7 +39,7 @@ func (c *serviceBanner) validate(reqId string, banner model.BannerHttp) error {
 	var errCount int
 	for _, v := range banner.Tags_id {
 
-		if v <= 0 {
+		if v <= 0 || v >= 1000 {
 			errCount++
 			c.logger.WithField("ServiceBanner.validate", reqId).Error("некорректные тег -- ", v)
 		}

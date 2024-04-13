@@ -7,7 +7,9 @@ import (
 	"banner/internal/logger"
 	psql "banner/internal/repo/Db"
 	servicebanner "banner/internal/service/serviceBanner"
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -52,13 +54,35 @@ func New() *App {
 	app.mux.Handle("/banner", m.ReqID(m.Aut(h.Insert))).Methods("POST")
 	app.mux.Handle("/banner/{id}", m.ReqID(m.Aut(h.Update))).Methods("PATCH")
 	app.mux.Handle("/banner/{id}", m.ReqID(m.Aut(h.Delete))).Methods("DELETE")
+	app.mux.Handle("/timer", m.ReqID(Hand)).Methods("GET")
 
 	return &app
 
 }
 
+func Hand(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), time.Millisecond*5)
+	defer cancel()
+	to := time.After(time.Millisecond * 5)
+	select {
+	case <-ctx.Done():
+		w.Write([]byte("Timeout"))
+		return
+	case <-to:
+		w.Write([]byte("Hello shoma"))
+	default:
+		time.Sleep(time.Second * 5)
+		w.Write([]byte("Hello"))
+	}
+
+}
+
 func (a *App) Run() {
+	srv := &http.Server{
+		Addr:    a.address,
+		Handler: a.mux,
+	}
 	a.logger.Info("Listening on: ", a.address)
-	a.logger.Fatal(http.ListenAndServe(a.address, a.mux))
+	a.logger.Fatal(srv.ListenAndServe())
 
 }

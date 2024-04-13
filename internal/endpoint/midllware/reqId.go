@@ -15,6 +15,8 @@ func (m *midllware) ReqID(next http.HandlerFunc) http.HandlerFunc {
 			reqID = uuid.New().String()
 		}
 		ctx := context.WithValue(r.Context(), "reqID", reqID)
+
 		next.ServeHTTP(w, r.WithContext(ctx))
+
 	})
 }
