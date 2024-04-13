@@ -24,7 +24,7 @@ func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerHtt
 	for rows.Next() {
 		var bannerDB model.BannerDB
 
-		err := rows.Scan()
+		err := rows.Scan(&bannerDB.Id, &bannerDB.Title, &bannerDB.Text, &bannerDB.Url, &bannerDB.Active, &bannerDB.Created_at, &bannerDB.Updated_at)
 
 		if err != nil {
 
@@ -34,9 +34,15 @@ func (p *psql) Filter(reqId string, filter map[string]string) ([]model.BannerHtt
 
 		}
 
+		err = p.dB.QueryRow("Select feature_id from chains where banner_id = $1", bannerDB.Id).Scan(&bannerDB.Feature)
+		if err != nil {
+			p.logger.WithField("psql.Filter", reqId).Error(err)
+			return nil, err
+		}
+
 		var tegs model.Tags
 
-		row, err := p.dB.Query("Select tegs_id from chains where banner_id = $1", bannerDB.Id)
+		row, err := p.dB.Query("Select tags_id from chains where banner_id = $1", bannerDB.Id)
 		if err != nil {
 			p.logger.WithField("psql.Filter", reqId).Error(err)
 			return nil, err
@@ -87,12 +93,12 @@ func (p *psql) queryFilter(filter map[string]string) string {
 
 			field, ok := filter["feature"]
 			if ok {
-				query += fmt.Sprintf("AND feature_id = %s", field)
+				query += fmt.Sprintf(" AND id IN (SELECT banner_id FROM chains WHERE feature_id = %s) ", field)
 			}
 
 			value, es := filter["tag"]
 			if es {
-				query += fmt.Sprintf("AND id IN (SELECT banner_id FROM chains WHERE tags_id = %s)", value)
+				query += fmt.Sprintf(" AND id IN (SELECT banner_id FROM chains WHERE tags_id = %s) ", value)
 			}
 
 			query += fmt.Sprintf("LIMIT %s", limit)
@@ -102,12 +108,12 @@ func (p *psql) queryFilter(filter map[string]string) string {
 
 			field, ok := filter["feature"]
 			if ok {
-				query += fmt.Sprintf("AND feature_id = %s", field)
+				query += fmt.Sprintf(" AND id IN (SELECT banner_id FROM chains WHERE feature_id = %s) ", field)
 			}
 
 			value, es := filter["tag"]
 			if es {
-				query += fmt.Sprintf("AND id IN (SELECT banner_id FROM chains WHERE tags_id = %s)", value)
+				query += fmt.Sprintf(" AND id IN (SELECT banner_id FROM chains WHERE tags_id = %s) ", value)
 			}
 
 			return query

@@ -11,13 +11,13 @@ func (p *psql) Delete(reqId string, id int) error {
 		return err
 	}
 
-	err = p.dB.QueryRow("DELETE FROM banner WHERE id = $1", id).Err()
+	err = p.dB.QueryRow("DELETE FROM chains WHERE banner_id = $1", id).Err()
 	if err != nil {
 		p.logger.WithField("psql.Delete", reqId).Error(err)
 		return err
 	}
 
-	err = p.dB.QueryRow("DELETE FROM chains WHERE banner_id = $1", id).Err()
+	err = p.dB.QueryRow("DELETE FROM banner WHERE id = $1", id).Err()
 	if err != nil {
 		p.logger.WithField("psql.Delete", reqId).Error(err)
 		return err

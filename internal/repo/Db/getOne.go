@@ -51,7 +51,7 @@ func (p *psql) chekRowForGetOne(reqId string, feature_id int, tag_id int) (bool,
 
 	p.logger.WithField("psql.chekRowForGetOne", reqId).Debug("Полученные данные -- ", feature_id, "---", tag_id)
 
-	err := p.dB.QueryRow("SELECT EXISTS(SELECT * FROM chains WHERE feature_id = $1, tags_id = $2)", feature_id, tag_id).Scan(&ok)
+	err := p.dB.QueryRow("SELECT EXISTS(SELECT * FROM chains WHERE feature_id = $1 AND tags_id = $2 ) ", feature_id, tag_id).Scan(&ok)
 
 	if err != nil {
 		p.logger.WithField("psql.chekRow", reqId).Error(err)

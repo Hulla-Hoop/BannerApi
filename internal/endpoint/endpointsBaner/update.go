@@ -33,6 +33,10 @@ func (h *endpoint) Update(w http.ResponseWriter, r *http.Request) {
 		h.jsonError(w, http.StatusInternalServerError, err)
 		return
 	}
+	if body == nil {
+		h.jsonError(w, http.StatusBadRequest, errors.New("empty body"))
+		return
+	}
 
 	err = h.s.Update(reqID, id, body)
 

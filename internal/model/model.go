@@ -37,6 +37,7 @@ type BannerDB struct {
 	Updated_at string
 }
 
-func (b BannerDB) TOTagsAndBannerFilter(Tags) BannerHttp {
-	return BannerHttp{b.Id, Tags{}, b.Feature, Banner{b.Title, b.Text, b.Url}, b.Active, b.Created_at, b.Updated_at}
+func (b BannerDB) TOTagsAndBannerFilter(v Tags) BannerHttp {
+
+	return BannerHttp{b.Id, v, b.Feature, Banner{b.Title, b.Text, b.Url}, b.Active, b.Created_at, b.Updated_at}
 }

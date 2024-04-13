@@ -43,7 +43,7 @@ func (p *psql) Update(reqId string, b model.BannerDB, t model.Tags) error {
 func (p *psql) getQuery(reqId string, b model.BannerDB) string {
 
 	query := `
-	UPDATE cars 
+	UPDATE banner 
 	SET `
 
 	if b.Title != "" {
