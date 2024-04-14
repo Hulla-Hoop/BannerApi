@@ -6,10 +6,9 @@ import (
 	"banner/internal/endpoint/midllware"
 	"banner/internal/logger"
 	psql "banner/internal/repo/Db"
+	"banner/internal/repo/timecash"
 	servicebanner "banner/internal/service/serviceBanner"
-	"context"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -36,12 +35,13 @@ func New() *App {
 	if err != nil {
 		app.logger.Fatal(err)
 	}
+	cash := timecash.New(app.logger, db)
 
 	cfg := config.ServNew()
 
 	app.address = cfg.Host + ":" + cfg.Port
 
-	s := servicebanner.InitServiceBanner(app.logger, db)
+	s := servicebanner.InitServiceBanner(app.logger, cash)
 
 	h := endpointsbaner.Init(app.logger, s)
 
@@ -54,26 +54,8 @@ func New() *App {
 	app.mux.Handle("/banner", m.ReqID(m.Aut(h.Insert))).Methods("POST")
 	app.mux.Handle("/banner/{id}", m.ReqID(m.Aut(h.Update))).Methods("PATCH")
 	app.mux.Handle("/banner/{id}", m.ReqID(m.Aut(h.Delete))).Methods("DELETE")
-	app.mux.Handle("/timer", m.ReqID(Hand)).Methods("GET")
 
 	return &app
-
-}
-
-func Hand(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), time.Millisecond*5)
-	defer cancel()
-	to := time.After(time.Millisecond * 5)
-	select {
-	case <-ctx.Done():
-		w.Write([]byte("Timeout"))
-		return
-	case <-to:
-		w.Write([]byte("Hello shoma"))
-	default:
-		time.Sleep(time.Second * 5)
-		w.Write([]byte("Hello"))
-	}
 
 }
 
