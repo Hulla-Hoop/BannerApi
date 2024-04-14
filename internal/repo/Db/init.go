@@ -25,6 +25,8 @@ func InitDb(logger *logrus.Logger) (*psql, error) {
 		return nil, err
 	}
 
+	dB.SetMaxIdleConns(25)
+
 	err = goose.Up(dB, "migration")
 	if err != nil {
 		return nil,
