@@ -17,7 +17,12 @@
 
 ## Условия
 
+Запуск проекта `make run`
+
 ### `1. Используйте этот API `
+
+Соответствие апи можно проверить в коллекции postman 
+<https://github.com/Hulla-Hoop/BannerApi/blob/main/docs/April(Avito).postman_collection.json>
 
 ### `2. Тегов и фичей небольшое количество (до 1000), RPS — 1k, SLI времени ответа — 50 мс, SLI успешности ответа — 99.99%`
 
